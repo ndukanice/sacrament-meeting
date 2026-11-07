@@ -1,10 +1,11 @@
 import { MeetingCard } from "@/components/MeetingCard";
+import { getBaseUrl } from "@/lib/base-url";
 import type { SacramentMeeting } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
 export default async function MeetingsPage() {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+  const baseUrl = await getBaseUrl();
   const response = await fetch(`${baseUrl}/api/meetings`, { cache: "no-store" });
 
   if (!response.ok) {

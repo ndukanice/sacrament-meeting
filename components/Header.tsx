@@ -10,7 +10,7 @@ export function Header() {
   }).format(new Date());
 
   return (
-    <header className="border-b border-slate-700 bg-slate-900 text-white">
+    <header className="border-b border-slate-700 bg-slate-900 text-white print:hidden">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-4">
         <div>
           <Link href="/" className="text-xl font-bold tracking-tight">

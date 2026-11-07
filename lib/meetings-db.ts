@@ -99,6 +99,42 @@ const meetings: SacramentMeeting[] = [
     closingHymn: { number: 7, title: "Abide with Me" },
     closingPrayer: "Brother Williams",
   },
+  {
+    id: 6,
+    date: "2026-11-01",
+    meetingType: "testimony",
+    presiding: "Bishop Smith",
+    conducting: "Brother Jones",
+    announcements: ["Tithing declaration appointments are open", "Ward Christmas party committee meets Tuesday"],
+    openingHymn: { number: 19, title: "We Thank Thee, O God, for a Prophet" },
+    openingPrayer: "Sister Nelson",
+    wardBusiness: [{ description: "Release of the Sunday School secretary" }],
+    stakeBusiness: false,
+    sacramentHymn: { number: 181, title: "Jesus of Nazareth, Savior and King" },
+    speakers: [],
+    closingHymn: { number: 85, title: "How Firm a Foundation" },
+    closingPrayer: "Brother Harris",
+  },
+  {
+    id: 7,
+    date: "2026-11-08",
+    meetingType: "regular",
+    presiding: "Bishop Smith",
+    conducting: "Brother Moore",
+    announcements: ["Stake conference is in two weeks", "Food drive donations due Saturday"],
+    openingHymn: { number: 98, title: "I Need Thee Every Hour" },
+    openingPrayer: "Sister Evans",
+    wardBusiness: [{ description: "Sustaining of new ward clerk" }],
+    stakeBusiness: false,
+    sacramentHymn: { number: 196, title: "Jesus, Once of Humble Birth" },
+    speakers: [
+      { name: "Sister Clark", topic: "Gratitude", type: "speaker" },
+      { name: "Ward Choir", topic: "", type: "musical-number" },
+      { name: "Brother Lewis", topic: "Ministering like the Savior", type: "speaker" },
+    ],
+    closingHymn: { number: 166, title: "Abide with Me!" },
+    closingPrayer: "Brother Turner",
+  },
 ];
 
 export function getMeetings(date?: string | null): SacramentMeeting[] {
@@ -113,13 +149,25 @@ export function getMeetingById(id: number): SacramentMeeting | null {
   return meetings.find((meeting) => meeting.id === id) ?? null;
 }
 
-export function getCurrentSundayMeeting(): SacramentMeeting | null {
-  const today = new Date();
-  const dayOfWeek = today.getDay();
-  const sunday = new Date(today);
-  sunday.setDate(today.getDate() - dayOfWeek);
-  sunday.setHours(0, 0, 0, 0);
+// Format a date as YYYY-MM-DD using local time (toISOString would shift it to UTC).
+function toDateString(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
 
-  const isoDate = sunday.toISOString().slice(0, 10);
-  return meetings.find((meeting) => meeting.date === isoDate) ?? null;
+  return `${year}-${month}-${day}`;
+}
+
+// Returns the meeting for the most recent Sunday (today if it is Sunday).
+// If that Sunday has no entry, falls back to the latest meeting before it.
+export function getCurrentSundayMeeting(today: Date = new Date()): SacramentMeeting | null {
+  const sunday = new Date(today);
+  sunday.setDate(today.getDate() - today.getDay());
+  const sundayDate = toDateString(sunday);
+
+  const pastMeetings = meetings
+    .filter((meeting) => meeting.date <= sundayDate)
+    .sort((a, b) => b.date.localeCompare(a.date));
+
+  return pastMeetings[0] ?? null;
 }

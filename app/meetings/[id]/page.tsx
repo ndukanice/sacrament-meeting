@@ -1,5 +1,7 @@
 import { notFound } from "next/navigation";
 import { MeetingDetail } from "@/components/MeetingDetail";
+import { PrintButton } from "@/components/PrintButton";
+import { getBaseUrl } from "@/lib/base-url";
 import type { SacramentMeeting } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -16,7 +18,7 @@ export default async function MeetingDetailPage({ params }: MeetingDetailPagePro
     notFound();
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+  const baseUrl = await getBaseUrl();
   const response = await fetch(`${baseUrl}/api/meetings/${meetingId}`, { cache: "no-store" });
 
   if (!response.ok) {
@@ -26,7 +28,10 @@ export default async function MeetingDetailPage({ params }: MeetingDetailPagePro
   const meeting: SacramentMeeting = await response.json();
 
   return (
-    <div className="mx-auto max-w-4xl">
+    <div className="mx-auto max-w-4xl space-y-4">
+      <div className="flex justify-end">
+        <PrintButton />
+      </div>
       <MeetingDetail meeting={meeting} />
     </div>
   );

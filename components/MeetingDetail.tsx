@@ -9,13 +9,13 @@ export function MeetingDetail({ meeting }: { meeting: SacramentMeeting }) {
   }).format(new Date(`${meeting.date}T00:00:00`));
 
   return (
-    <article className="space-y-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+    <article className="space-y-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm print:rounded-none print:border-0 print:p-0 print:shadow-none">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <p className="text-sm uppercase tracking-[0.25em] text-slate-500">{meeting.meetingType}</p>
           <h1 className="mt-2 text-3xl font-bold text-slate-900">{formattedDate}</h1>
         </div>
-        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-slate-100">
+        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-slate-100 print:hidden">
           <Image
             src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=900&q=80"
             alt="Sacrament table and meeting room"
@@ -76,7 +76,12 @@ export function MeetingDetail({ meeting }: { meeting: SacramentMeeting }) {
       </section>
 
       <section>
-        <h2 className="mb-3 text-lg font-semibold text-slate-900">Speakers</h2>
+        <h2 className="mb-3 text-lg font-semibold text-slate-900">Speakers and Musical Numbers</h2>
+        {meeting.speakers.length === 0 && (
+          <p className="text-slate-600">
+            {meeting.meetingType === "testimony" ? "Testimonies from the congregation." : "No speakers listed."}
+          </p>
+        )}
         <ul className="space-y-3 text-slate-700">
           {meeting.speakers.map((speaker) => (
             <li key={`${speaker.name}-${speaker.topic}`} className="rounded-xl bg-slate-50 p-3">
